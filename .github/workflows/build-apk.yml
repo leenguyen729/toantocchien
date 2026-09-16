@@ -18,15 +18,14 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Cai Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Chap nhan license (va cai goi neu duoc)
+      - name: Chuan bi Android SDK (dung ban co san tren may chu)
         shell: bash
         run: |
           set +o pipefail
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1 || true
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          SDKMGR="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMGR" --licenses > /dev/null 2>&1 || true
+          "$SDKMGR" "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1 || true
 
       - name: Build APK
         run: |
