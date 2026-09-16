@@ -22,7 +22,9 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Cai goi SDK can thiet
-        run: yes | sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" >/dev/null
+        run: |
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
       - name: Build APK
         run: |
