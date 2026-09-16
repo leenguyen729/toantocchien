@@ -21,10 +21,12 @@ jobs:
       - name: Cai Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Cai goi SDK can thiet
+      - name: Chap nhan license (va cai goi neu duoc)
+        shell: bash
         run: |
+          set +o pipefail
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1 || true
 
       - name: Build APK
         run: |
