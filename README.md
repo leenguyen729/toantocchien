@@ -3,10 +3,10 @@
 App học toán chạy **hoàn toàn offline** (không cần Internet, không quảng cáo), cài trực tiếp lên điện thoại/máy tính bảng Android, **không cần lên chợ ứng dụng**.
 
 ## Bản 2.0 có gì mới
-- **Màn hình Cài đặt** (nút ⚙️ ở trang chủ): chỉnh **số câu hỏi mỗi phiên** và **thời gian đếm ngược từng chế độ** ngay trong app. Muốn sửa phải **nhập mã quản lý `trongloi87@`**; giá trị mặc định giữ nguyên thông số đang dùng (300 câu; Dễ 5s, Vừa 20s, Khó 30s, Nhân 5s).
+- **Màn hình Cài đặt** (nút ⚙️ ở trang chủ): chỉnh **số câu hỏi mỗi phiên** và **thời gian đếm ngược từng chế độ** ngay trong app. Muốn sửa phải **nhập mã quản lý ``**; giá trị mặc định giữ nguyên thông số đang dùng (300 câu; Dễ 5s, Vừa 20s, Khó 30s, Nhân 5s).
 - **Luật hết giờ mới:** hết thời gian mà chưa trả lời → **hiện đáp án đúng, trừ 1 điểm, rồi tự chuyển câu tiếp theo** (không kết thúc phiên nữa).
 - **Nút ✕ (đỏ) trong màn chơi:** thoát câu hỏi, **dừng game và về trang chủ** (có hỏi xác nhận, và vẫn ghi log phiên).
-- **Xóa lịch sử cần mã `trongloi87@`** mới thực hiện được.
+- **Xóa lịch sử cần mã ``** mới thực hiện được.
 - **Lịch sử ghi chi tiết hơn:** mỗi phiên hiển thị **thời gian đếm ngược** (giây/câu), số câu, đúng/sai, lý do kết thúc, ngày giờ.
 - **Tự xoay màn hình:** dọc hay ngang đều hiển thị hợp lý (ngang: câu hỏi bên trái, đáp án bên phải).
 
@@ -22,7 +22,7 @@ App học toán chạy **hoàn toàn offline** (không cần Internet, không qu
 - **Mọi phiên chơi đều được lưu log**, xem ở mục **Lịch sử điểm**. Lưu ngay trên máy, không gửi đi đâu.
 - Âm thanh tạo bằng Web Audio (không cần file), lưu điểm & cài đặt bằng localStorage → **100% offline**.
 
-> **Đổi mã quản lý:** mở `app/src/main/assets/index.html`, sửa dòng `const ADMIN_KEY = "trongloi87@";`.
+> **Đổi mã quản lý:** mở `app/src/main/assets/index.html`, sửa dòng `const ADMIN_KEY = "";`.
 >
 > **Cập nhật app không mất dữ liệu:** khi cài APK mới **đè lên** bản cũ (KHÔNG gỡ trước), toàn bộ lịch sử điểm và cài đặt vẫn được giữ. Chỉ khi *gỡ cài đặt* app thì dữ liệu mới mất.
 
