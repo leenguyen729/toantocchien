@@ -2,18 +2,29 @@
 
 App học toán chạy **hoàn toàn offline** (không cần Internet, không quảng cáo), cài trực tiếp lên điện thoại/máy tính bảng Android, **không cần lên chợ ứng dụng**.
 
-## Tính năng (đúng theo yêu cầu)
-- **Module Cộng & Trừ — 3 cấp độ** (mỗi phiên 300 câu ngẫu nhiên, phép trừ luôn ra kết quả ≥ 0):
-  - **Dễ:** cộng/trừ số **1 chữ số** — **5 giây**/câu.
-  - **Vừa:** **2 chữ số ± 1 chữ số** — **20 giây**/câu.
-  - **Khó:** các **số nhỏ hơn 100** — **30 giây**/câu.
-- **Module Bảng cửu chương (Nhân):** phép nhân **2–9**, 300 câu ngẫu nhiên — **5 giây**/câu.
-- Mỗi câu có **thời gian suy nghĩ riêng theo cấp**, kèm **thanh thời gian** rút ngắn dần (xanh → vàng → đỏ) và số giây còn lại.
-- **Đúng +1 điểm, sai −1 điểm.**
-- Trả lời **sai**: có **âm thanh báo sai** và **hiện đáp án đúng** (ô đúng sáng xanh).
-- **Hết 5 giây mà không trả lời → kết thúc phiên** và ghi log điểm.
-- **Mọi phiên chơi đều được lưu log** (ngày giờ, cấp, điểm, số câu đúng/sai, lý do kết thúc) — xem ở mục **Lịch sử điểm**. Lưu ngay trên máy, không gửi đi đâu.
-- Âm thanh tạo bằng Web Audio (không cần file), lưu điểm bằng localStorage → **100% offline**.
+## Bản 2.0 có gì mới
+- **Màn hình Cài đặt** (nút ⚙️ ở trang chủ): chỉnh **số câu hỏi mỗi phiên** và **thời gian đếm ngược từng chế độ** ngay trong app. Muốn sửa phải **nhập mã quản lý `trongloi87@`**; giá trị mặc định giữ nguyên thông số đang dùng (300 câu; Dễ 5s, Vừa 20s, Khó 30s, Nhân 5s).
+- **Luật hết giờ mới:** hết thời gian mà chưa trả lời → **hiện đáp án đúng, trừ 1 điểm, rồi tự chuyển câu tiếp theo** (không kết thúc phiên nữa).
+- **Nút ✕ (đỏ) trong màn chơi:** thoát câu hỏi, **dừng game và về trang chủ** (có hỏi xác nhận, và vẫn ghi log phiên).
+- **Xóa lịch sử cần mã `trongloi87@`** mới thực hiện được.
+- **Lịch sử ghi chi tiết hơn:** mỗi phiên hiển thị **thời gian đếm ngược** (giây/câu), số câu, đúng/sai, lý do kết thúc, ngày giờ.
+- **Tự xoay màn hình:** dọc hay ngang đều hiển thị hợp lý (ngang: câu hỏi bên trái, đáp án bên phải).
+
+## Tính năng chính
+- **Module Cộng & Trừ — 3 cấp độ** (phép trừ luôn ra kết quả ≥ 0):
+  - **Dễ:** cộng/trừ số **1 chữ số** — mặc định **5 giây**/câu.
+  - **Vừa:** **2 chữ số ± 1 chữ số** — mặc định **20 giây**/câu.
+  - **Khó:** các **số nhỏ hơn 100** — mặc định **30 giây**/câu.
+- **Module Bảng cửu chương (Nhân):** phép nhân **2–9** — mặc định **5 giây**/câu.
+- Mỗi câu có **thanh thời gian** rút ngắn dần (xanh → vàng → đỏ) và số giây còn lại.
+- **Đúng +1 điểm, sai −1 điểm** (hết giờ cũng −1).
+- Trả lời **sai / hết giờ**: có **âm thanh báo** và **hiện đáp án đúng** (ô đúng sáng xanh).
+- **Mọi phiên chơi đều được lưu log**, xem ở mục **Lịch sử điểm**. Lưu ngay trên máy, không gửi đi đâu.
+- Âm thanh tạo bằng Web Audio (không cần file), lưu điểm & cài đặt bằng localStorage → **100% offline**.
+
+> **Đổi mã quản lý:** mở `app/src/main/assets/index.html`, sửa dòng `const ADMIN_KEY = "trongloi87@";`.
+>
+> **Cập nhật app không mất dữ liệu:** khi cài APK mới **đè lên** bản cũ (KHÔNG gỡ trước), toàn bộ lịch sử điểm và cài đặt vẫn được giữ. Chỉ khi *gỡ cài đặt* app thì dữ liệu mới mất.
 
 > Muốn chỉnh **số câu** hoặc **điểm**? Mở `app/src/main/assets/index.html`, sửa khối `CONFIG`:
 > ```js
