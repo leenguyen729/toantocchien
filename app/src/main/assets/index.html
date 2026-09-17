@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>Toán Tốc Chiến</title>
+<style>
+  :root{
+    --bg1:#312e81; --bg2:#1b1748;
+    --ink:#0f172a; --ink-soft:#475569;
+    --gold:#fbbf24; --gold-deep:#f59e0b;
+    --go:#22c55e; --go-deep:#16a34a;
+    --stop:#ef4444; --stop-deep:#dc2626;
+    --amber:#f59e0b; --amber-deep:#d97706;
+    --coral:#fb7185;
+    --card:#ffffff; --lav:#eef2ff;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;margin:0;}
+  body{
+    font-family:'Segoe UI Rounded','SF Pro Rounded',system-ui,-apple-system,'Roboto',sans-serif;
+    color:#fff;
+    background:radial-gradient(120% 90% at 50% -10%, #4338ca 0%, var(--bg1) 45%, var(--bg2) 100%);
+    background-attachment:fixed;
+    overflow:hidden;
+    -webkit-user-select:none; user-select:none;
+  }
+  #app{
+    height:100dvh; height:100vh;
+    display:flex; flex-direction:column;
+    max-width:680px; margin:0 auto;
+    padding:calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 12px);
+  }
+  .screen{flex:1; display:none; flex-direction:column; min-height:0;}
+  .screen.on{display:flex;}
+
+  /* ---------- HOME ---------- */
+  .home-top{text-align:center; padding:4px 0 2px;}
+  .logo{
+    font-size:clamp(28px,7.5vw,48px); font-weight:900; letter-spacing:.5px; line-height:1.02;
+    text-shadow:0 4px 0 rgba(0,0,0,.18), 0 0 26px rgba(129,140,248,.55);
+  }
+  .logo .a{color:var(--gold);}
+  .tagline{margin-top:6px; font-size:clamp(12px,3.4vw,15px); color:#c7d2fe; font-weight:600;}
+  .home-mid{flex:1; display:flex; flex-direction:column; justify-content:center; gap:14px; padding:8px 0; overflow-y:auto; min-height:0;}
+  .module{display:flex; flex-direction:column; gap:9px;}
+  .sec-title{display:flex; align-items:center; gap:9px; font-size:clamp(15px,4.2vw,19px); font-weight:900; color:#e0e7ff; padding-left:4px;}
+  .sec-title .ico{font-size:1.15em; filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));}
+
+  .diff-btn{
+    display:flex; align-items:center; gap:12px; width:100%; text-align:left; cursor:pointer;
+    border:none; border-radius:20px; padding:12px 13px; color:#fff;
+    background:rgba(255,255,255,.08);
+    box-shadow:0 6px 0 rgba(0,0,0,.16), 0 8px 18px rgba(0,0,0,.22);
+    transition:transform .08s ease, box-shadow .08s ease;
+  }
+  .diff-btn:active{transform:translateY(5px); box-shadow:0 2px 0 rgba(0,0,0,.16);}
+  .d-pill{min-width:92px; text-align:center; font-weight:900; font-size:clamp(15px,4vw,18px); padding:11px 8px; border-radius:15px; box-shadow:inset 0 -3px 0 rgba(0,0,0,.15);}
+  .d-easy   .d-pill{background:linear-gradient(135deg,#4ade80,#16a34a); color:#052e13;}
+  .d-medium .d-pill{background:linear-gradient(135deg,#fbbf24,#d97706); color:#3a2606;}
+  .d-hard   .d-pill{background:linear-gradient(135deg,#fb7185,#dc2626); color:#3f0a0a;}
+  .d-mid{flex:1; min-width:0;}
+  .d-desc{font-weight:800; font-size:clamp(13px,3.6vw,15px);}
+  .d-rec{font-size:12px; color:#fcd34d; font-weight:800; margin-top:3px; min-height:14px;}
+  .d-time{font-weight:900; font-size:13px; background:rgba(0,0,0,.26); padding:9px 11px; border-radius:13px; white-space:nowrap;}
+
+  .level-btn{
+    border:none; border-radius:22px; padding:16px 18px; text-align:left; cursor:pointer;
+    display:flex; align-items:center; gap:16px; color:#fff; width:100%;
+    background:linear-gradient(135deg,#ea580c,#f59e0b);
+    box-shadow:0 8px 0 rgba(0,0,0,.18), 0 12px 26px rgba(0,0,0,.26);
+    transition:transform .08s ease, box-shadow .08s ease;
+  }
+  .level-btn:active{transform:translateY(5px); box-shadow:0 3px 0 rgba(0,0,0,.18);}
+  .lvl-emoji{font-size:clamp(32px,8.5vw,44px); filter:drop-shadow(0 3px 2px rgba(0,0,0,.25));}
+  .lvl-txt{flex:1; min-width:0;}
+  .lvl-name{font-size:clamp(16px,4.4vw,21px); font-weight:900;}
+  .lvl-desc{font-size:clamp(12px,3.2vw,14px); opacity:.95; margin-top:2px; font-weight:700;}
+  .lvl-best{font-size:12px; margin-top:5px; font-weight:800; color:#fffbe6;}
+
+  .home-bottom{display:flex; gap:10px; padding-top:2px;}
+  .ghost{
+    flex:1; border:2px solid rgba(255,255,255,.28); background:rgba(255,255,255,.06);
+    color:#e0e7ff; border-radius:16px; padding:13px; font-size:14.5px; font-weight:800; cursor:pointer;
+  }
+  .ghost:active{background:rgba(255,255,255,.14);}
+  .ver-tag{text-align:center; margin-top:10px; font-size:12.5px; font-weight:800; color:#a5b4fc; letter-spacing:.3px;}
+
+  /* ---------- GAME ---------- */
+  .hud{display:flex; align-items:center; gap:10px; padding:2px 2px 8px;}
+  .chip{display:flex; align-items:center; gap:7px; font-weight:900; background:rgba(255,255,255,.12); border-radius:16px; padding:9px 13px; font-size:15px;}
+  .chip.score{background:linear-gradient(135deg,var(--gold),var(--gold-deep)); color:#3a2606;}
+  .chip .lbl{font-size:11px; opacity:.85; font-weight:800;}
+  .hud .spacer{flex:1;}
+  .quit{border:none; background:rgba(239,68,68,.9); color:#fff; width:42px; height:42px; border-radius:14px; font-size:18px; font-weight:900; cursor:pointer;}
+  .quit:active{background:rgba(220,38,38,1);}
+  .mode-name{text-align:center; font-size:13px; font-weight:800; color:#c7d2fe; margin:0 0 8px;}
+
+  .timer-wrap{margin:2px 2px 14px;}
+  .timer-track{height:20px; border-radius:14px; background:rgba(0,0,0,.28); overflow:hidden; box-shadow:inset 0 2px 6px rgba(0,0,0,.35);}
+  .timer-fill{height:100%; width:100%; border-radius:14px; background:var(--go); transition:background-color .2s linear;}
+  .timer-num{text-align:center; margin-top:7px; font-weight:900; font-size:15px; color:#e0e7ff;}
+
+  .q-area{flex:1; display:flex; align-items:center; justify-content:center; min-height:0;}
+  .q-card{background:var(--card); color:var(--ink); border-radius:30px; width:100%; padding:24px 18px; box-shadow:0 16px 40px rgba(0,0,0,.35); display:flex; flex-direction:column;}
+  .q-main{text-align:center;}
+  .q-index{font-size:14px; font-weight:800; color:var(--ink-soft); letter-spacing:.4px;}
+  .q-text{font-size:clamp(42px,13vw,78px); font-weight:900; line-height:1.05; margin-top:8px; letter-spacing:1px;}
+  .q-text .eq{color:#94a3b8;}
+
+  .opts{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;}
+  .opt{border:none; border-radius:22px; padding:22px 10px; cursor:pointer; font-size:clamp(26px,8vw,40px); font-weight:900; color:var(--ink); background:var(--lav); box-shadow:0 7px 0 #c7d2fe; transition:transform .07s ease, box-shadow .07s ease;}
+  .opt:active{transform:translateY(4px); box-shadow:0 3px 0 #c7d2fe;}
+  .opt.correct{background:linear-gradient(135deg,var(--go),var(--go-deep)); color:#fff; box-shadow:0 7px 0 #0f7a37; animation:pop .35s ease;}
+  .opt.wrong{background:linear-gradient(135deg,var(--stop),var(--stop-deep)); color:#fff; box-shadow:0 7px 0 #991b1b; animation:shake .4s ease;}
+  .opt.dim{opacity:.45;}
+  @keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.08)}100%{transform:scale(1)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+
+  .flash{position:fixed; inset:0; pointer-events:none; opacity:0; z-index:5; transition:opacity .18s ease;}
+  .flash.show{opacity:1;}
+  .flash.good{background:radial-gradient(circle at 50% 45%, rgba(34,197,94,.35), transparent 60%);}
+  .flash.bad{background:radial-gradient(circle at 50% 45%, rgba(239,68,68,.4), transparent 62%);}
+
+  /* ---------- GAME OVER ---------- */
+  .over-box{flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center; gap:6px; overflow-y:auto;}
+  .over-emoji{font-size:clamp(52px,16vw,90px); line-height:1;}
+  .over-title{font-size:clamp(22px,6vw,34px); font-weight:900;}
+  .over-reason{font-size:15px; color:#c7d2fe; font-weight:700; margin-top:2px;}
+  .score-big{margin:14px auto; background:linear-gradient(135deg,var(--gold),var(--gold-deep)); color:#3a2606; border-radius:26px; padding:14px 28px; display:inline-block; box-shadow:0 12px 26px rgba(0,0,0,.3);}
+  .score-big .n{font-size:clamp(44px,15vw,74px); font-weight:900; line-height:1;}
+  .score-big .l{font-size:14px; font-weight:800; opacity:.85;}
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:6px auto; max-width:420px; width:100%;}
+  .stat{background:rgba(255,255,255,.1); border-radius:16px; padding:12px 6px;}
+  .stat .v{font-size:24px; font-weight:900;}
+  .stat .k{font-size:11.5px; opacity:.85; font-weight:700; margin-top:2px;}
+  .over-actions{display:flex; flex-direction:column; gap:12px; margin:14px auto 0; max-width:420px; width:100%;}
+  .btn-primary{border:none; border-radius:22px; padding:18px; font-size:18px; font-weight:900; cursor:pointer; color:#fff; background:linear-gradient(135deg,var(--go),var(--go-deep)); box-shadow:0 8px 0 #0f7a37;}
+  .btn-primary:active{transform:translateY(5px); box-shadow:0 3px 0 #0f7a37;}
+
+  /* ---------- HISTORY / SETTINGS shared ---------- */
+  .h-head{display:flex; align-items:center; gap:12px; padding:2px 0 14px;}
+  .h-head .title{font-size:23px; font-weight:900; flex:1;}
+  .back{border:none; background:rgba(255,255,255,.12); color:#fff; width:44px; height:44px; border-radius:14px; font-size:20px; font-weight:900; cursor:pointer;}
+  .back:active{background:rgba(255,255,255,.22);}
+  .scroll{flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-right:2px; min-height:0;}
+
+  .h-item{background:rgba(255,255,255,.09); border-radius:18px; padding:13px 15px; margin-bottom:10px; display:flex; align-items:center; gap:13px;}
+  .h-badge{font-size:24px;}
+  .h-mid{flex:1; min-width:0;}
+  .h-when{font-size:13px; color:#c7d2fe; font-weight:700;}
+  .h-sub{font-size:12.5px; color:#a5b4fc; margin-top:3px; font-weight:600; line-height:1.5;}
+  .h-score{font-size:26px; font-weight:900; text-align:right;}
+  .h-score.pos{color:var(--go);} .h-score.neg{color:var(--coral);} .h-score.zero{color:#e2e8f0;}
+  .h-empty{text-align:center; color:#c7d2fe; margin-top:40px; font-size:16px; font-weight:600; line-height:1.6;}
+  .h-clear{border:2px solid rgba(251,113,133,.45); background:rgba(251,113,133,.1); color:#fecdd3; border-radius:16px; padding:13px; font-size:15px; font-weight:800; cursor:pointer; margin-top:6px;}
+  .h-clear:active{background:rgba(251,113,133,.22);}
+
+  /* settings fields */
+  .set-note{font-size:13px; color:#c7d2fe; font-weight:600; background:rgba(255,255,255,.06); border-radius:14px; padding:12px 14px; margin-bottom:14px; line-height:1.5;}
+  .set-group{font-size:13px; font-weight:900; color:#a5b4fc; margin:14px 2px 8px; letter-spacing:.3px;}
+  .field{display:flex; align-items:center; gap:12px; background:rgba(255,255,255,.09); border-radius:16px; padding:11px 14px; margin-bottom:10px;}
+  .field label{flex:1; font-weight:800; font-size:14.5px;}
+  .field .unit{font-size:12.5px; color:#c7d2fe; font-weight:700;}
+  .field input{width:92px; text-align:center; font-size:19px; font-weight:900; color:var(--ink); background:#fff; border:none; border-radius:12px; padding:10px 6px;}
+  .field input:disabled{background:rgba(255,255,255,.35); color:#e0e7ff;}
+  .lockbar{display:flex; align-items:center; gap:8px; font-size:13px; font-weight:800; color:#fcd34d; margin:2px 2px 10px;}
+  .set-actions{display:flex; flex-direction:column; gap:11px; margin-top:14px;}
+  .btn-save{border:none; border-radius:18px; padding:16px; font-size:16px; font-weight:900; cursor:pointer; color:#fff; background:linear-gradient(135deg,var(--go),var(--go-deep)); box-shadow:0 6px 0 #0f7a37;}
+  .btn-save:active{transform:translateY(4px); box-shadow:0 2px 0 #0f7a37;}
+  .btn-save:disabled{background:#64748b; box-shadow:0 6px 0 #475569; opacity:.7; cursor:default;}
+  .btn-unlock{border:none; border-radius:18px; padding:15px; font-size:15px; font-weight:900; cursor:pointer; color:#3a2606; background:linear-gradient(135deg,var(--gold),var(--gold-deep)); box-shadow:0 6px 0 #b45309;}
+  .btn-unlock:active{transform:translateY(4px); box-shadow:0 2px 0 #b45309;}
+  .btn-reset{border:2px solid rgba(255,255,255,.28); background:rgba(255,255,255,.06); color:#e0e7ff; border-radius:16px; padding:13px; font-size:14px; font-weight:800; cursor:pointer;}
+  .btn-reset:active{background:rgba(255,255,255,.14);}
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay{position:fixed; inset:0; z-index:50; background:rgba(15,12,40,.72); display:none; align-items:center; justify-content:center; padding:24px;}
+  .modal-overlay.on{display:flex;}
+  .modal-box{background:#fff; color:var(--ink); border-radius:24px; width:100%; max-width:380px; padding:22px; box-shadow:0 20px 50px rgba(0,0,0,.5);}
+  .modal-title{font-size:19px; font-weight:900; margin-bottom:8px;}
+  .modal-msg{font-size:14.5px; color:var(--ink-soft); font-weight:600; line-height:1.5; white-space:pre-line;}
+  .modal-input{width:100%; margin-top:14px; font-size:17px; font-weight:800; color:var(--ink); background:#f1f5f9; border:2px solid #cbd5e1; border-radius:14px; padding:13px 14px; text-align:center;}
+  .modal-actions{display:flex; gap:10px; margin-top:18px;}
+  .modal-actions button{flex:1; border:none; border-radius:14px; padding:14px; font-size:15px; font-weight:900; cursor:pointer;}
+  .m-cancel{background:#e2e8f0; color:#334155;}
+  .m-cancel:active{background:#cbd5e1;}
+  .m-ok{background:linear-gradient(135deg,var(--go),var(--go-deep)); color:#fff;}
+  .m-ok.danger{background:linear-gradient(135deg,var(--stop),var(--stop-deep));}
+  .m-ok:active{filter:brightness(.94);}
+
+  @media (prefers-reduced-motion: reduce){
+    .opt.correct,.opt.wrong{animation:none;}
+    .diff-btn,.level-btn,.opt,.btn-primary{transition:none;}
+  }
+
+  /* ---------- LANDSCAPE (xoay ngang) ---------- */
+  @media (orientation:landscape){
+    #app{padding-top:calc(env(safe-area-inset-top) + 8px); padding-bottom:calc(env(safe-area-inset-bottom) + 8px);}
+    .logo{font-size:clamp(24px,5vh,40px);}
+    .home-mid{flex-direction:row; align-items:stretch; gap:16px; flex-wrap:wrap;}
+    .home-mid .module{flex:1; min-width:280px; justify-content:center;}
+    .timer-wrap{margin-bottom:10px;}
+    .q-card{flex-direction:row; align-items:center; gap:22px; padding:18px 22px;}
+    .q-main{flex:1;}
+    .q-text{font-size:clamp(34px,10vh,66px); margin-top:4px;}
+    .opts{flex:1; margin-top:0;}
+    .opt{padding:14px 8px; font-size:clamp(22px,6vh,36px); box-shadow:0 5px 0 #c7d2fe;}
+    .mode-name{margin-bottom:6px;}
+  }
+</style>
+</head>
+<body>
+<div class="flash" id="flash"></div>
+<div id="app">
+
+  <!-- HOME -->
+  <section class="screen on" id="screen-home">
+    <div class="home-top">
+      <div class="logo">TOÁN <span class="a">TỐC CHIẾN</span></div>
+      <div class="tagline">Tính nhanh · Đúng cộng điểm · Sai trừ điểm</div>
+    </div>
+
+    <div class="home-mid">
+      <div class="module">
+        <div class="sec-title"><span class="ico">➕➖</span> Cộng &amp; Trừ</div>
+
+        <button class="diff-btn d-easy" onclick="Game.start('add_easy')">
+          <span class="d-pill">Dễ</span>
+          <span class="d-mid"><div class="d-desc">Cộng trừ số 1 chữ số</div><div class="d-rec" id="rec-add_easy"></div></span>
+          <span class="d-time" id="t-add_easy">5 giây</span>
+        </button>
+
+        <button class="diff-btn d-medium" onclick="Game.start('add_medium')">
+          <span class="d-pill">Vừa</span>
+          <span class="d-mid"><div class="d-desc">2 chữ số ± 1 chữ số</div><div class="d-rec" id="rec-add_medium"></div></span>
+          <span class="d-time" id="t-add_medium">20 giây</span>
+        </button>
+
+        <button class="diff-btn d-hard" onclick="Game.start('add_hard')">
+          <span class="d-pill">Khó</span>
+          <span class="d-mid"><div class="d-desc">Các số nhỏ hơn 100</div><div class="d-rec" id="rec-add_hard"></div></span>
+          <span class="d-time" id="t-add_hard">30 giây</span>
+        </button>
+      </div>
+
+      <div class="module">
+        <div class="sec-title"><span class="ico">✖️</span> Bảng cửu chương</div>
+        <button class="level-btn" onclick="Game.start('mul')">
+          <div class="lvl-emoji">✖️</div>
+          <div class="lvl-txt">
+            <div class="lvl-name">Phép nhân 2–9</div>
+            <div class="lvl-desc" id="mul-desc">300 câu · 5 giây / câu</div>
+            <div class="lvl-best" id="rec-mul"></div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="home-bottom">
+      <button class="ghost" onclick="History.open()">📜 Lịch sử</button>
+      <button class="ghost" onclick="Settings.open()">⚙️ Cài đặt</button>
+    </div>
+    <div class="ver-tag" id="app-ver">Phiên bản …</div>
+  </section>
+
+  <!-- GAME -->
+  <section class="screen" id="screen-game">
+    <div class="hud">
+      <div class="chip score"><span class="lbl">ĐIỂM</span><span id="hud-score">0</span></div>
+      <div class="chip"><span class="lbl">CÂU</span><span id="hud-count">1/300</span></div>
+      <div class="spacer"></div>
+      <button class="quit" onclick="Game.quit()" title="Thoát">✕</button>
+    </div>
+    <div class="mode-name" id="mode-name">—</div>
+
+    <div class="timer-wrap">
+      <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
+      <div class="timer-num" id="timer-num">5.0 giây</div>
+    </div>
+
+    <div class="q-area">
+      <div class="q-card">
+        <div class="q-main">
+          <div class="q-index" id="q-index">Câu 1</div>
+          <div class="q-text" id="q-text">—</div>
+        </div>
+        <div class="opts" id="opts"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GAME OVER -->
+  <section class="screen" id="screen-over">
+    <div class="over-box">
+      <div class="over-emoji" id="over-emoji">🏆</div>
+      <div class="over-title" id="over-title">Kết thúc!</div>
+      <div class="over-reason" id="over-reason"></div>
+      <div class="score-big"><div class="n" id="over-score">0</div><div class="l">TỔNG ĐIỂM</div></div>
+      <div class="stats">
+        <div class="stat"><div class="v" id="over-correct" style="color:var(--go)">0</div><div class="k">Đúng</div></div>
+        <div class="stat"><div class="v" id="over-wrong" style="color:var(--coral)">0</div><div class="k">Sai</div></div>
+        <div class="stat"><div class="v" id="over-answered">0</div><div class="k">Đã trả lời</div></div>
+      </div>
+      <div class="over-actions">
+        <button class="btn-primary" onclick="Game.replay()">🔄 Chơi lại</button>
+        <button class="ghost" onclick="Screen.go('home')">🏠 Về trang chủ</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="screen" id="screen-history">
+    <div class="h-head">
+      <button class="back" onclick="Screen.go('home')">‹</button>
+      <div class="title">Lịch sử điểm</div>
+    </div>
+    <div class="scroll" id="h-list"></div>
+    <button class="h-clear" id="h-clear" onclick="History.clear()">🗑️ Xóa toàn bộ lịch sử (cần mã)</button>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="screen" id="screen-settings">
+    <div class="h-head">
+      <button class="back" onclick="Screen.go('home')">‹</button>
+      <div class="title">Cài đặt</div>
+    </div>
+    <div class="scroll">
+      <div class="set-note">Chỉnh số câu hỏi mỗi phiên và thời gian đếm ngược cho từng chế độ. Cần nhập mã quản lý mới được sửa.</div>
+      <div class="lockbar" id="lockbar">🔒 Đang khóa — bấm “Nhập mã để chỉnh sửa”.</div>
+
+      <div class="set-group">SỐ CÂU HỎI</div>
+      <div class="field">
+        <label>Số câu mỗi phiên</label>
+        <input id="f-questions" type="number" inputmode="numeric" min="1" max="1000" disabled />
+        <span class="unit">câu</span>
+      </div>
+
+      <div class="set-group">THỜI GIAN ĐẾM NGƯỢC MỖI CÂU</div>
+      <div class="field">
+        <label>Cộng &amp; Trừ · Dễ</label>
+        <input id="f-add_easy" type="number" inputmode="numeric" min="1" max="600" disabled />
+        <span class="unit">giây</span>
+      </div>
+      <div class="field">
+        <label>Cộng &amp; Trừ · Vừa</label>
+        <input id="f-add_medium" type="number" inputmode="numeric" min="1" max="600" disabled />
+        <span class="unit">giây</span>
+      </div>
+      <div class="field">
+        <label>Cộng &amp; Trừ · Khó</label>
+        <input id="f-add_hard" type="number" inputmode="numeric" min="1" max="600" disabled />
+        <span class="unit">giây</span>
+      </div>
+      <div class="field">
+        <label>Bảng cửu chương (Nhân)</label>
+        <input id="f-mul" type="number" inputmode="numeric" min="1" max="600" disabled />
+        <span class="unit">giây</span>
+      </div>
+
+      <div class="set-actions">
+        <button class="btn-unlock" id="btn-unlock" onclick="Settings.unlock()">🔑 Nhập mã để chỉnh sửa</button>
+        <button class="btn-save" id="btn-save" onclick="Settings.save()" disabled>💾 Lưu cài đặt</button>
+        <button class="btn-reset" id="btn-reset" onclick="Settings.resetDefaults()" style="display:none">↺ Khôi phục mặc định</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal-box">
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-msg" id="modal-msg"></div>
+      <input class="modal-input" id="modal-input" style="display:none" />
+      <div class="modal-actions">
+        <button class="m-cancel" id="modal-cancel">Hủy</button>
+        <button class="m-ok" id="modal-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+"use strict";
+
+/* ====== Phiên bản app (đổi số này mỗi lần cập nhật để dễ kiểm tra) ====== */
+const APP_VERSION = "2.1";
+
+/* ====== Mã quản lý ====== */
+const ADMIN_KEY = "trongloi87@";
+
+/* ====== Giá trị mặc định (thông số bạn đang dùng) ====== */
+const DEFAULTS = { questions:300, times:{ add_easy:5, add_medium:20, add_hard:30, mul:5 } };
+const POINT_RIGHT = +1, POINT_WRONG = -1;
+const LOG_KEY = 'ttc_logs_v1';
+const SET_KEY = 'ttc_settings_v1';
+
+/* ====== Tiện ích ====== */
+const $ = id => document.getElementById(id);
+const rnd = n => Math.floor(Math.random()*n);
+const rint = (a,b) => a + Math.floor(Math.random()*(b-a+1));
+function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=rnd(i+1); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+function clampInt(v,min,max,dflt){ v=parseInt(v,10); if(isNaN(v)) return dflt; return Math.max(min,Math.min(max,v)); }
+
+/* ====== Cài đặt (đọc/ghi localStorage) ====== */
+const SettingsStore = {
+  load(){
+    try{
+      const s=JSON.parse(localStorage.getItem(SET_KEY));
+      if(s && s.times){
+        return {
+          questions: clampInt(s.questions,1,1000,DEFAULTS.questions),
+          times:{
+            add_easy:   clampInt(s.times.add_easy,1,600,DEFAULTS.times.add_easy),
+            add_medium: clampInt(s.times.add_medium,1,600,DEFAULTS.times.add_medium),
+            add_hard:   clampInt(s.times.add_hard,1,600,DEFAULTS.times.add_hard),
+            mul:        clampInt(s.times.mul,1,600,DEFAULTS.times.mul)
+          }
+        };
+      }
+    }catch(e){}
+    return JSON.parse(JSON.stringify(DEFAULTS));
+  },
+  save(cfg){ try{ localStorage.setItem(SET_KEY, JSON.stringify(cfg)); }catch(e){} }
+};
+let SETTINGS = SettingsStore.load();
+
+/* ====== Âm thanh (Web Audio – offline) ====== */
+const Sound = (()=>{
+  let ctx=null;
+  function ensure(){ if(!ctx){ try{ ctx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(ctx&&ctx.state==='suspended') ctx.resume(); }
+  function tone(freq,start,dur,type='sine',vol=0.22){
+    if(!ctx) return;
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type=type; o.frequency.value=freq;
+    const t=ctx.currentTime+start;
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t+dur+0.02);
+  }
+  return {
+    unlock: ensure,
+    right(){ ensure(); tone(660,0,0.12,'sine',0.2); tone(990,0.09,0.16,'sine',0.2); },
+    wrong(){ ensure(); tone(200,0,0.28,'sawtooth',0.28); tone(150,0.05,0.30,'square',0.18); },
+    over(){ ensure(); tone(500,0,0.18,'sine',0.22); tone(380,0.16,0.20,'sine',0.22); tone(260,0.34,0.34,'sine',0.22); }
+  };
+})();
+
+/* ====== Modal (thay cho alert/confirm/prompt của trình duyệt) ====== */
+const Modal = {
+  _resolve:null,
+  _open(opts){
+    return new Promise(res=>{
+      this._resolve=res;
+      $('modal-title').textContent = opts.title || '';
+      $('modal-msg').textContent = opts.msg || '';
+      const inp=$('modal-input');
+      if(opts.input){ inp.style.display='block'; inp.type=opts.password?'password':'text'; inp.value=''; }
+      else inp.style.display='none';
+      const ok=$('modal-ok'), cancel=$('modal-cancel');
+      ok.textContent=opts.okText||'OK';
+      cancel.textContent=opts.cancelText||'Hủy';
+      ok.className='m-ok'+(opts.danger?' danger':'');
+      cancel.style.display = opts.noCancel ? 'none' : 'block';
+      $('modal').classList.add('on');
+      if(opts.input) setTimeout(()=>inp.focus(),50);
+    });
+  },
+  _close(val){ $('modal').classList.remove('on'); const r=this._resolve; this._resolve=null; if(r) r(val); },
+  confirm(title,msg,opts={}){ return this._open({title,msg,okText:opts.okText||'Đồng ý',cancelText:'Hủy',danger:opts.danger}); },
+  alert(title,msg){ return this._open({title,msg,okText:'OK',noCancel:true}); },
+  prompt(title,msg,opts={}){ return this._open({title,msg,input:true,password:opts.password,okText:opts.okText||'Xác nhận',cancelText:'Hủy'}); }
+};
+$('modal-ok').onclick = ()=>{ const inp=$('modal-input'); Modal._close(inp.style.display==='none' ? true : inp.value); };
+$('modal-cancel').onclick = ()=>{ Modal._close(null); };
+
+/* ====== Sinh câu hỏi ====== */
+function makeOptions(answer, pool){
+  const set=new Set([answer]); const dd=[];
+  const cand=shuffle(pool.filter(v=>Number.isInteger(v)&&v>=0&&v!==answer));
+  for(const v of cand){ if(dd.length>=3) break; if(!set.has(v)){ set.add(v); dd.push(v); } }
+  let d=1;
+  while(dd.length<3){ for(const v of [answer+d,answer-d]){ if(dd.length>=3) break; if(Number.isInteger(v)&&v>=0&&!set.has(v)){ set.add(v); dd.push(v); } } d++; if(d>50) break; }
+  return shuffle([answer,...dd]);
+}
+function genAddSubEasy(){
+  let a,b,ans,op;
+  if(Math.random()<0.5){ a=rint(1,9); b=rint(1,9); ans=a+b; op='+'; }
+  else { a=rint(1,9); b=rint(0,a); ans=a-b; op='−'; }
+  return { text:`${a} ${op} ${b}`, answer:ans, options:makeOptions(ans,[ans+1,ans-1,ans+2,ans-2,ans+3,ans-3,a,b]) };
+}
+function genAddSubMedium(){
+  let a,b,ans,op;
+  if(Math.random()<0.5){ a=rint(10,99); b=rint(1,9); ans=a+b; op='+'; }
+  else { a=rint(10,99); b=rint(1,9); ans=a-b; op='−'; }
+  return { text:`${a} ${op} ${b}`, answer:ans, options:makeOptions(ans,[ans+1,ans-1,ans+2,ans-2,ans+10,ans-10,ans+b,ans-b,a]) };
+}
+function genAddSubHard(){
+  let a,b,ans,op;
+  if(Math.random()<0.5){ a=rint(1,99); b=rint(1,99); ans=a+b; op='+'; }
+  else { a=rint(1,99); b=rint(0,a); ans=a-b; op='−'; }
+  return { text:`${a} ${op} ${b}`, answer:ans, options:makeOptions(ans,[ans+1,ans-1,ans+2,ans-2,ans+10,ans-10,ans+9,ans+11,a,b]) };
+}
+function genMul(){
+  const a=rint(2,9), b=rint(1,10), ans=a*b;
+  return { text:`${a} × ${b}`, answer:ans, options:makeOptions(ans,[a*(b+1),a*(b-1),(a+1)*b,(a-1)*b,ans+a,ans-a,ans+1,ans-1,ans+2,ans-2,ans+b,ans-b]) };
+}
+
+const MODES = {
+  add_easy:   { name:'Cộng & Trừ · Dễ',        badge:'➕', gen:genAddSubEasy },
+  add_medium: { name:'Cộng & Trừ · Vừa',       badge:'➕', gen:genAddSubMedium },
+  add_hard:   { name:'Cộng & Trừ · Khó',       badge:'➕', gen:genAddSubHard },
+  mul:        { name:'Bảng cửu chương (Nhân)', badge:'✖️', gen:genMul }
+};
+function buildQuestions(modeKey, n){ const gen=MODES[modeKey].gen; const out=[]; for(let i=0;i<n;i++) out.push(gen()); return out; }
+
+/* ====== Màn hình ====== */
+const Screen = {
+  go(name){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+    $('screen-'+name).classList.add('on');
+    if(name==='home') Home.refresh();
+  }
+};
+
+/* ====== Log ====== */
+const Store = {
+  all(){ try{ return JSON.parse(localStorage.getItem(LOG_KEY)||'[]'); }catch(e){ return []; } },
+  add(rec){ const a=this.all(); a.push(rec); try{ localStorage.setItem(LOG_KEY, JSON.stringify(a)); }catch(e){} },
+  clear(){ try{ localStorage.removeItem(LOG_KEY); }catch(e){} }
+};
+
+/* ====== Trang chủ ====== */
+const Home = {
+  refresh(){
+    $('t-add_easy').textContent   = SETTINGS.times.add_easy + ' giây';
+    $('t-add_medium').textContent = SETTINGS.times.add_medium + ' giây';
+    $('t-add_hard').textContent   = SETTINGS.times.add_hard + ' giây';
+    $('mul-desc').textContent     = `${SETTINGS.questions} câu · ${SETTINGS.times.mul} giây / câu`;
+    const logs=Store.all();
+    for(const key of Object.keys(MODES)){
+      const played=logs.filter(l=>l.mode===key);
+      const el=$('rec-'+key); if(!el) continue;
+      if(played.length){ const best=Math.max(...played.map(l=>l.score)); el.textContent=`⭐ Kỷ lục ${best} · đã chơi ${played.length} lần`; }
+      else el.textContent='';
+    }
+  }
+};
+
+/* ====== Game ====== */
+const Game = {
+  mode:'add_easy', timeLimit:5, total:300, questions:[], i:0, score:0, correct:0, wrong:0,
+  locked:false, rafId:null, startedAt:0,
+
+  start(modeKey){
+    Sound.unlock();
+    SETTINGS = SettingsStore.load();
+    this.mode=modeKey;
+    this.timeLimit=SETTINGS.times[modeKey];
+    this.total=SETTINGS.questions;
+    this.questions=buildQuestions(modeKey, this.total);
+    this.i=0; this.score=0; this.correct=0; this.wrong=0; this.locked=false;
+    this.startedAt=Date.now();
+    $('hud-score').textContent='0';
+    $('mode-name').textContent=MODES[modeKey].name;
+    Screen.go('game');
+    this.show();
+  },
+  replay(){ this.start(this.mode); },
+
+  show(){
+    this.locked=false;
+    const q=this.questions[this.i];
+    $('q-index').textContent=`Câu ${this.i+1}`;
+    $('hud-count').textContent=`${this.i+1}/${this.total}`;
+    $('q-text').innerHTML=q.text.replace(/([+−×])/g,'<span class="eq">$1</span>');
+    const box=$('opts'); box.innerHTML='';
+    q.options.forEach(v=>{
+      const b=document.createElement('button');
+      b.className='opt'; b.textContent=v;
+      b.onclick=()=>this.answer(v,b);
+      box.appendChild(b);
+    });
+    this.startTimer();
+  },
+
+  startTimer(){
+    const fill=$('timer-fill'), num=$('timer-num');
+    const total=this.timeLimit*1000, t0=performance.now();
+    const step=(now)=>{
+      const left=total-(now-t0);
+      const f=Math.max(0,left/total);
+      fill.style.width=(f*100)+'%';
+      fill.style.background = f>0.5 ? 'var(--go)' : (f>0.25 ? 'var(--amber)' : 'var(--stop)');
+      num.textContent=(Math.max(0,left)/1000).toFixed(1)+' giây';
+      if(left<=0){ this.rafId=null; this.onTimeout(); return; }
+      this.rafId=requestAnimationFrame(step);
+    };
+    this.stopTimer();
+    this.rafId=requestAnimationFrame(step);
+  },
+  stopTimer(){ if(this.rafId){ cancelAnimationFrame(this.rafId); this.rafId=null; } },
+
+  answer(val, btn){
+    if(this.locked) return;
+    this.locked=true; this.stopTimer();
+    const q=this.questions[this.i];
+    const buttons=[...document.querySelectorAll('#opts .opt')];
+    buttons.forEach(b=>{ if(b!==btn) b.classList.add('dim'); });
+
+    if(val===q.answer){
+      this.score+=POINT_RIGHT; this.correct++;
+      btn.classList.remove('dim'); btn.classList.add('correct');
+      Sound.right(); Game.flash('good');
+      $('hud-score').textContent=this.score;
+      setTimeout(()=>this.next(), 650);
+    }else{
+      this.score+=POINT_WRONG; this.wrong++;
+      btn.classList.remove('dim'); btn.classList.add('wrong');
+      buttons.forEach(b=>{ if(Number(b.textContent)===q.answer){ b.classList.remove('dim'); b.classList.add('correct'); } });
+      Sound.wrong(); Game.flash('bad');
+      $('hud-score').textContent=this.score;
+      setTimeout(()=>this.next(), 1350);
+    }
+  },
+
+  // Het gio ma chua tra loi: hien dap an dung, TRU 1 diem, roi CHAY TIEP cau khac
+  onTimeout(){
+    if(this.locked) return;
+    this.locked=true;
+    const q=this.questions[this.i];
+    this.score+=POINT_WRONG; this.wrong++;
+    [...document.querySelectorAll('#opts .opt')].forEach(b=>{
+      if(Number(b.textContent)===q.answer) b.classList.add('correct'); else b.classList.add('dim');
+    });
+    Sound.wrong(); Game.flash('bad');
+    $('hud-score').textContent=this.score;
+    setTimeout(()=>this.next(), 1350);
+  },
+
+  next(){
+    this.i++;
+    if(this.i>=this.total){ this.finish(); return; }
+    this.show();
+  },
+
+  finish(){
+    this.stopTimer();
+    this._log('completed');
+    Sound.over();
+    $('over-score').textContent=this.score;
+    $('over-correct').textContent=this.correct;
+    $('over-wrong').textContent=this.wrong;
+    $('over-answered').textContent=this.correct+this.wrong;
+    $('over-emoji').textContent='🏆';
+    $('over-title').textContent=`Hoàn thành ${this.total} câu!`;
+    $('over-reason').textContent='Bạn đã trả lời hết tất cả câu hỏi.';
+    Screen.go('over');
+  },
+
+  // Bam X: dung game, ghi log, ve trang chu
+  quit(){
+    this.stopTimer();
+    Modal.confirm('Thoát game?','Dừng phiên chơi và trở về màn hình chính. Điểm hiện tại sẽ được ghi lại.',{danger:true,okText:'Thoát'})
+    .then(ok=>{
+      if(ok){ if(this.correct+this.wrong>0) this._log('quit'); Screen.go('home'); }
+      else { if(!this.locked) this.startTimer(); }
+    });
+  },
+
+  _log(reason){
+    const m=MODES[this.mode];
+    Store.add({
+      date:new Date().toISOString(),
+      mode:this.mode, modeName:m.name, badge:m.badge,
+      time:this.timeLimit, total:this.total,
+      score:this.score, correct:this.correct, wrong:this.wrong,
+      answered:this.correct+this.wrong,
+      reason:reason, durationSec:Math.round((Date.now()-this.startedAt)/1000)
+    });
+  },
+
+  flash(kind){ const f=$('flash'); f.className='flash '+(kind==='good'?'good':'bad')+' show'; setTimeout(()=>f.classList.remove('show'),200); }
+};
+
+/* ====== Lịch sử ====== */
+const History = {
+  open(){ this.render(); Screen.go('history'); },
+  render(){
+    const list=$('h-list'); const logs=Store.all().slice().reverse();
+    $('h-clear').style.display = logs.length ? 'block' : 'none';
+    if(!logs.length){ list.innerHTML='<div class="h-empty">Chưa có phiên chơi nào.<br>Hãy chơi một ván để lưu điểm nhé! 🎮</div>'; return; }
+    list.innerHTML = logs.map(l=>{
+      const d=new Date(l.date);
+      const when=`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} · ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+      const name=l.modeName||'Cộng & Trừ';
+      const badge=l.badge||'➕';
+      const reason=l.reason==='completed'?'Hoàn thành':(l.reason==='quit'?'Đã thoát giữa chừng':'Hết giờ');
+      const cls=l.score>0?'pos':(l.score<0?'neg':'zero'); const sign=l.score>0?'+':'';
+      const secs=l.time?`⏱️ ${l.time} giây/câu`:'';
+      const tot=l.total?` · ${l.total} câu`:'';
+      return `<div class="h-item">
+        <div class="h-badge">${badge}</div>
+        <div class="h-mid">
+          <div class="h-when">${when}</div>
+          <div class="h-sub">${name}<br>${secs}${tot} · Đúng ${l.correct} / Sai ${l.wrong} (trả lời ${l.answered}) · ${reason}</div>
+        </div>
+        <div class="h-score ${cls}">${sign}${l.score}</div>
+      </div>`;
+    }).join('');
+  },
+  clear(){
+    Modal.prompt('Xóa toàn bộ lịch sử','Nhập mã quản lý để xác nhận xóa. Không thể khôi phục.',{password:true,okText:'Xóa'})
+    .then(v=>{
+      if(v===null) return;
+      if(v===ADMIN_KEY){ Store.clear(); this.render(); Modal.alert('Đã xóa','Toàn bộ lịch sử điểm đã được xóa.'); }
+      else Modal.alert('Sai mã','Mã quản lý không đúng. Lịch sử vẫn được giữ nguyên.');
+    });
+  }
+};
+
+/* ====== Cài đặt (màn hình) ====== */
+const Settings = {
+  unlocked:false,
+  open(){ this.unlocked=false; this.fill(); this.setLocked(true); Screen.go('settings'); },
+  fill(){
+    $('f-questions').value=SETTINGS.questions;
+    $('f-add_easy').value=SETTINGS.times.add_easy;
+    $('f-add_medium').value=SETTINGS.times.add_medium;
+    $('f-add_hard').value=SETTINGS.times.add_hard;
+    $('f-mul').value=SETTINGS.times.mul;
+  },
+  setLocked(locked){
+    this.unlocked=!locked;
+    ['f-questions','f-add_easy','f-add_medium','f-add_hard','f-mul'].forEach(id=>{ $(id).disabled=locked; });
+    $('btn-save').disabled=locked;
+    $('btn-reset').style.display=locked?'none':'block';
+    $('btn-unlock').style.display=locked?'block':'none';
+    $('lockbar').textContent = locked ? '🔒 Đang khóa — bấm “Nhập mã để chỉnh sửa”.' : '🔓 Đã mở khóa — chỉnh xong nhớ bấm “Lưu cài đặt”.';
+  },
+  unlock(){
+    Modal.prompt('Nhập mã quản lý','Nhập mã để chỉnh sửa thông số.',{password:true})
+    .then(v=>{
+      if(v===null) return;
+      if(v===ADMIN_KEY) this.setLocked(false);
+      else Modal.alert('Sai mã','Mã quản lý không đúng.');
+    });
+  },
+  save(){
+    if(!this.unlocked) return;
+    const cfg={
+      questions: clampInt($('f-questions').value,1,1000,DEFAULTS.questions),
+      times:{
+        add_easy:   clampInt($('f-add_easy').value,1,600,DEFAULTS.times.add_easy),
+        add_medium: clampInt($('f-add_medium').value,1,600,DEFAULTS.times.add_medium),
+        add_hard:   clampInt($('f-add_hard').value,1,600,DEFAULTS.times.add_hard),
+        mul:        clampInt($('f-mul').value,1,600,DEFAULTS.times.mul)
+      }
+    };
+    SettingsStore.save(cfg); SETTINGS=cfg; this.fill(); this.setLocked(true);
+    Modal.alert('Đã lưu','Cài đặt mới đã được lưu và áp dụng cho các lần chơi tiếp theo.');
+  },
+  resetDefaults(){
+    if(!this.unlocked) return;
+    $('f-questions').value=DEFAULTS.questions;
+    $('f-add_easy').value=DEFAULTS.times.add_easy;
+    $('f-add_medium').value=DEFAULTS.times.add_medium;
+    $('f-add_hard').value=DEFAULTS.times.add_hard;
+    $('f-mul').value=DEFAULTS.times.mul;
+    Modal.alert('Đã điền mặc định','Đã điền lại thông số mặc định. Bấm “Lưu cài đặt” để áp dụng.');
+  }
+};
+
+/* ====== Nút Back của Android ====== */
+window.addEventListener('load', ()=>{
+  $('app-ver').textContent = 'Phiên bản ' + APP_VERSION;
+  Home.refresh(); history.pushState({},'');
+});
+window.addEventListener('popstate', ()=>{
+  history.pushState({},'');
+  if($('modal').classList.contains('on')){ Modal._close(null); return; }
+  const cur=document.querySelector('.screen.on').id;
+  if(cur==='screen-game'){ Game.quit(); }
+  else if(cur!=='screen-home'){ Screen.go('home'); }
+});
+</script>
+</body>
+</html>

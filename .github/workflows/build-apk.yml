@@ -1,5 +1,6 @@
 name: Build APK
 
+# Chay khi ban bam nut (Actions -> Build APK -> Run workflow), hoac khi push
 on:
   workflow_dispatch:
   push:
@@ -18,19 +19,15 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Chuan bi Android SDK (dung ban co san tren may chu)
-        shell: bash
-        run: |
-          set +o pipefail
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          SDKMGR="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
-          yes | "$SDKMGR" --licenses > /dev/null 2>&1 || true
-          "$SDKMGR" "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1 || true
+      - name: Cai Android SDK
+        uses: android-actions/setup-android@v3
 
-      - name: Build APK
+      - name: Cai goi SDK can thiet
         run: |
-          chmod +x ./gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace
+          yes | sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" >/dev/null
+
+      - name: Build APK (debug - cai truc tiep duoc)
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Tai APK len (artifact)
         uses: actions/upload-artifact@v4
