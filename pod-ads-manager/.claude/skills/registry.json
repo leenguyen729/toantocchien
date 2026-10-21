@@ -1,0 +1,437 @@
+{
+  "$comment": "Registry đúng 18 skills: skill → tools → roles → schemas. Skill 'planned' chưa có SKILL.md; tool của nó trả CAPABILITY_UNSUPPORTED cho tới phase tương ứng. Nguồn: POD_ADS_SKILLS_REQUIREMENTS.md §4.",
+  "schema_bundle": "schemas/pod-contracts.schema.json",
+  "policy_version": "policy_v1.0",
+  "skills": [
+    {
+      "id": "S01",
+      "slug": "pod-business-context",
+      "status": "implemented",
+      "phase": "P1",
+      "version": "1.0.0",
+      "trigger": "onboarding hoặc thay mục tiêu; không dùng để suy đoán cấu hình tiền còn thiếu.",
+      "tools": [
+        "context.get",
+        "context.validate",
+        "context.save_draft",
+        "connections.health"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [
+        "config.confirm (UI)"
+      ],
+      "external_writes": "via_S17_only",
+      "input_schema": "BusinessContextInput",
+      "output_schema": "BusinessContextOutput",
+      "skill_md": ".claude/skills/pod-business-context/SKILL.md",
+      "evals": ".claude/skills/pod-business-context/evals/evals.json"
+    },
+    {
+      "id": "S02",
+      "slug": "pod-shopify-catalog",
+      "status": "planned",
+      "phase": "P2",
+      "version": "0.0.0",
+      "trigger": "sync định kỳ hoặc sản phẩm thay đổi; không sửa catalog Shopify.",
+      "tools": [
+        "shopify.catalog.read",
+        "catalog.upsert_internal",
+        "catalog.validate_mapping"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [],
+      "external_writes": "via_S17_only",
+      "input_schema": "ShopifyCatalogInput",
+      "output_schema": "ShopifyCatalogOutput",
+      "skill_md": null,
+      "evals": null
+    },
+    {
+      "id": "S03",
+      "slug": "pod-unit-economics",
+      "status": "planned",
+      "phase": "P2",
+      "version": "0.0.0",
+      "trigger": "cập nhật chi phí hoặc trước quyết định ngân sách/CPA.",
+      "tools": [
+        "costs.read",
+        "fx.read",
+        "economics.compute"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [],
+      "external_writes": "via_S17_only",
+      "input_schema": "UnitEconomicsInput",
+      "output_schema": "UnitEconomicsOutput",
+      "skill_md": null,
+      "evals": null
+    },
+    {
+      "id": "S04",
+      "slug": "pod-niche-market-research",
+      "status": "planned",
+      "phase": "P3",
+      "version": "0.0.0",
+      "trigger": "nghiên cứu niche/dịp lễ/ý tưởng test; không scraping nguồn bị cấm.",
+      "tools": [
+        "research.search_approved",
+        "research.fetch_approved",
+        "knowledge.read"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [],
+      "external_writes": "via_S17_only",
+      "input_schema": "NicheMarketResearchInput",
+      "output_schema": "NicheMarketResearchOutput",
+      "skill_md": null,
+      "evals": null
+    },
+    {
+      "id": "S05",
+      "slug": "pod-audience-strategy",
+      "status": "planned",
+      "phase": "P3",
+      "version": "0.0.0",
+      "trigger": "lập prospecting/retargeting; không tự tạo/upload audience.",
+      "tools": [
+        "meta.targeting.capabilities",
+        "meta.audiences.read_metadata",
+        "audience.validate_plan"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [],
+      "external_writes": "via_S17_only",
+      "input_schema": "AudienceStrategyInput",
+      "output_schema": "AudienceStrategyOutput",
+      "skill_md": null,
+      "evals": null
+    },
+    {
+      "id": "S06",
+      "slug": "pod-creative-strategy",
+      "status": "planned",
+      "phase": "P3",
+      "version": "0.0.0",
+      "trigger": "thiết kế angle/concept/brief cho ảnh hoặc video.",
+      "tools": [
+        "brand.read",
+        "assets.search",
+        "creative.brief.validate"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [],
+      "external_writes": "via_S17_only",
+      "input_schema": "CreativeStrategyInput",
+      "output_schema": "CreativeStrategyOutput",
+      "skill_md": null,
+      "evals": null
+    },
+    {
+      "id": "S07",
+      "slug": "pod-ad-copy",
+      "status": "planned",
+      "phase": "P3",
+      "version": "0.0.0",
+      "trigger": "soạn primary text/headline/description và bản địa hóa.",
+      "tools": [
+        "copy.generate_draft",
+        "copy.validate",
+        "landing.read_snapshot"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [],
+      "external_writes": "via_S17_only",
+      "input_schema": "AdCopyInput",
+      "output_schema": "AdCopyOutput",
+      "skill_md": null,
+      "evals": null
+    },
+    {
+      "id": "S08",
+      "slug": "pod-policy-ip-review",
+      "status": "planned",
+      "phase": "P3",
+      "version": "0.0.0",
+      "trigger": "trước launch hoặc khi creative/policy/landing thay đổi.",
+      "tools": [
+        "policy.content.evaluate",
+        "rights.lookup",
+        "landing.inspect"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [],
+      "external_writes": "via_S17_only",
+      "input_schema": "PolicyIpReviewInput",
+      "output_schema": "PolicyIpReviewOutput",
+      "skill_md": null,
+      "evals": null
+    },
+    {
+      "id": "S09",
+      "slug": "pod-tracking-attribution",
+      "status": "planned",
+      "phase": "P2",
+      "version": "0.0.0",
+      "trigger": "prelaunch tracking health hoặc điều tra số liệu lệch.",
+      "tools": [
+        "meta.tracking.read",
+        "tracking.audit",
+        "attribution.compare",
+        "utm.build"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [],
+      "external_writes": "via_S17_only",
+      "input_schema": "TrackingAttributionInput",
+      "output_schema": "TrackingAttributionOutput",
+      "skill_md": null,
+      "evals": null
+    },
+    {
+      "id": "S10",
+      "slug": "pod-campaign-planner",
+      "status": "planned",
+      "phase": "P3",
+      "version": "0.0.0",
+      "trigger": "lập cấu trúc campaign/ad set/ad; không tạo trực tiếp trên Meta.",
+      "tools": [
+        "meta.account.capabilities",
+        "campaign.plan.validate",
+        "budget.simulate"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [],
+      "external_writes": "via_S17_only",
+      "input_schema": "CampaignPlannerInput",
+      "output_schema": "CampaignPlannerOutput",
+      "skill_md": null,
+      "evals": null
+    },
+    {
+      "id": "S11",
+      "slug": "pod-experiment-design",
+      "status": "planned",
+      "phase": "P3",
+      "version": "0.0.0",
+      "trigger": "test angle, audience, offer hoặc creative.",
+      "tools": [
+        "experiment.design",
+        "experiment.power_estimate",
+        "experiment.register"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [],
+      "external_writes": "via_S17_only",
+      "input_schema": "ExperimentDesignInput",
+      "output_schema": "ExperimentDesignOutput",
+      "skill_md": null,
+      "evals": null
+    },
+    {
+      "id": "S12",
+      "slug": "pod-insights-ingestion",
+      "status": "planned",
+      "phase": "P2",
+      "version": "0.0.0",
+      "trigger": "lịch sync, backfill hoặc báo cáo.",
+      "tools": [
+        "meta.insights.request",
+        "meta.insights.poll",
+        "meta.insights.page",
+        "insights.normalize"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [],
+      "external_writes": "via_S17_only",
+      "input_schema": "InsightsIngestionInput",
+      "output_schema": "InsightsIngestionOutput",
+      "skill_md": null,
+      "evals": null
+    },
+    {
+      "id": "S13",
+      "slug": "pod-performance-diagnosis",
+      "status": "planned",
+      "phase": "P2",
+      "version": "0.0.0",
+      "trigger": "phân tích CPA/ROAS/margin/funnel hoặc anomaly.",
+      "tools": [
+        "metrics.compute",
+        "anomaly.detect",
+        "diagnosis.explain"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [],
+      "external_writes": "via_S17_only",
+      "input_schema": "PerformanceDiagnosisInput",
+      "output_schema": "PerformanceDiagnosisOutput",
+      "skill_md": null,
+      "evals": null
+    },
+    {
+      "id": "S14",
+      "slug": "pod-budget-optimization",
+      "status": "planned",
+      "phase": "P4",
+      "version": "0.0.0",
+      "trigger": "đề xuất phân bổ/tăng/giảm tiền hoặc pause theo policy.",
+      "tools": [
+        "budget.optimize_draft",
+        "budget.exposure.compute",
+        "proposal.create"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [],
+      "external_writes": "via_S17_only",
+      "input_schema": "BudgetOptimizationInput",
+      "output_schema": "BudgetOptimizationOutput",
+      "skill_md": null,
+      "evals": null
+    },
+    {
+      "id": "S15",
+      "slug": "pod-creative-fatigue",
+      "status": "planned",
+      "phase": "P3",
+      "version": "0.0.0",
+      "trigger": "kiểm giảm hiệu quả creative và đề xuất refresh.",
+      "tools": [
+        "creative.performance.read",
+        "fatigue.evaluate",
+        "creative.refresh.draft"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [],
+      "external_writes": "via_S17_only",
+      "input_schema": "CreativeFatigueInput",
+      "output_schema": "CreativeFatigueOutput",
+      "skill_md": null,
+      "evals": null
+    },
+    {
+      "id": "S16",
+      "slug": "pod-reporting-learning",
+      "status": "planned",
+      "phase": "P2",
+      "version": "0.0.0",
+      "trigger": "báo cáo ngày/tuần/tháng và tổng kết test.",
+      "tools": [
+        "reports.build",
+        "knowledge.propose_learning",
+        "audit.read"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "owner"
+      ],
+      "human_only_steps": [],
+      "external_writes": "via_S17_only",
+      "input_schema": "ReportingLearningInput",
+      "output_schema": "ReportingLearningOutput",
+      "skill_md": null,
+      "evals": null
+    },
+    {
+      "id": "S17",
+      "slug": "pod-approval-execution",
+      "status": "implemented",
+      "phase": "P1",
+      "version": "1.0.0",
+      "trigger": "trình proposal và yêu cầu thực thi proposal đã được người duyệt.",
+      "tools": [
+        "meta.structure.read",
+        "proposal.create",
+        "proposal.validate",
+        "approval.status",
+        "execution.request",
+        "execution.reconcile"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "approver",
+        "operator",
+        "owner"
+      ],
+      "human_only_steps": [
+        "proposal.approve (UI)"
+      ],
+      "external_writes": "gateway (worker giữ write adapter; skill chỉ xin xếp hàng)",
+      "input_schema": "ApprovalExecutionInput",
+      "output_schema": "ApprovalExecutionOutput",
+      "skill_md": ".claude/skills/pod-approval-execution/SKILL.md",
+      "evals": ".claude/skills/pod-approval-execution/evals/evals.json"
+    },
+    {
+      "id": "S18",
+      "slug": "pod-operations-incident",
+      "status": "implemented",
+      "phase": "P1",
+      "version": "1.0.0",
+      "trigger": "connector/data/permission/spend anomaly hoặc sự cố.",
+      "tools": [
+        "ops.health",
+        "ops.freeze_writes",
+        "ops.incident.create",
+        "ops.recovery.draft"
+      ],
+      "invoker_roles": [
+        "analyst",
+        "operator",
+        "owner"
+      ],
+      "human_only_steps": [
+        "ops.unfreeze (UI)"
+      ],
+      "external_writes": "none (freeze là khóa nội bộ)",
+      "input_schema": "OperationsIncidentInput",
+      "output_schema": "OperationsIncidentOutput",
+      "skill_md": ".claude/skills/pod-operations-incident/SKILL.md",
+      "evals": ".claude/skills/pod-operations-incident/evals/evals.json"
+    }
+  ]
+}

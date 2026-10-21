@@ -1,0 +1,8 @@
+{
+  "assets": [
+    { "tenant_id": "tenant_demo", "asset_id": "asset_demo_1", "storage_key": "fixtures/assets/demo-tee-front.png", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "mime": "image/png", "width": 1080, "height": 1080, "rights_status": "verified", "rights_evidence": ["rights_demo_1"], "product_refs": ["gid_product_demo_1"], "review_id": "review_demo_1", "version": 1 }
+  ],
+  "reviews": [
+    { "tenant_id": "tenant_demo", "review_id": "review_demo_1", "decision": "pass", "reviewed_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "policy_version": "policy_v1.0", "human_reviewed": true }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "name": "pod-ads-manager",
+  "private": true,
+  "version": "0.1.0",
+  "description": "POD AI Facebook Ads Manager — mock-first, approval-gated",
+  "type": "module",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "gen:schemas": "tsx scripts/gen-schemas.ts",
+    "check:schemas": "tsx scripts/gen-schemas.ts --check",
+    "gen:docs": "tsx scripts/gen-docs.ts",
+    "check:docs": "tsx scripts/gen-docs.ts --check",
+    "typecheck": "tsc -p tsconfig.json --noEmit && pnpm --filter @pod/web typecheck",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:integration:pg": "vitest run tests/integration/pg",
+    "evals": "tsx scripts/run-skill-evals.ts",
+    "skills:check": "tsx scripts/check-skills.ts",
+    "e2e:ui": "playwright test",
+    "dev:api": "tsx watch apps/api/src/main.ts",
+    "dev:worker": "tsx watch apps/worker/src/main.ts",
+    "dev:web": "pnpm --filter @pod/web dev",
+    "demo": "tsx scripts/demo.ts",
+    "db:migrate": "tsx scripts/db-migrate.ts",
+    "verify": "pnpm check:schemas && pnpm check:docs && pnpm lint && pnpm typecheck && pnpm skills:check && pnpm test:coverage && pnpm evals"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@playwright/test": "1.56.1",
+    "@pod/adapter-claude": "workspace:*",
+    "@pod/adapter-meta": "workspace:*",
+    "@pod/adapter-shopify": "workspace:*",
+    "@pod/api": "workspace:*",
+    "@pod/contracts": "workspace:*",
+    "@pod/domain": "workspace:*",
+    "@pod/policy": "workspace:*",
+    "@types/node": "22.20.5",
+    "@types/pg": "8.23.1",
+    "@vitest/coverage-v8": "4.1.12",
+    "eslint": "9.39.5",
+    "json-schema-to-typescript": "16.0.0",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.0",
+    "vitest": "4.1.12"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "@pod/adapter-claude",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": { "@pod/contracts": "workspace:*", "@pod/domain": "workspace:*", "@pod/policy": "workspace:*", "ajv": "8.20.0" }
+}

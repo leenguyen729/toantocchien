@@ -1,0 +1,19 @@
+{
+  "tenant_id": "tenant_demo",
+  "store_id": "store_demo",
+  "ad_account_id": "act_demo",
+  "users": [
+    { "actor_id": "u_owner", "display_name": "Owner (demo)", "kind": "human", "grants": [{ "role": "owner", "ad_account_ids": "*" }] },
+    { "actor_id": "u_analyst", "display_name": "Analyst (demo)", "kind": "human", "grants": [{ "role": "analyst", "ad_account_ids": ["act_demo"] }] },
+    { "actor_id": "u_approver", "display_name": "Approver (demo)", "kind": "human", "grants": [{ "role": "approver", "ad_account_ids": ["act_demo"], "approval_limit_minor": 50000, "approval_limit_currency": "USD" }] },
+    { "actor_id": "u_operator", "display_name": "Operator (demo)", "kind": "human", "grants": [{ "role": "operator", "ad_account_ids": "*" }] },
+    { "actor_id": "u_viewer", "display_name": "Viewer (demo)", "kind": "human", "grants": [{ "role": "viewer", "ad_account_ids": ["act_demo"] }] }
+  ],
+  "other_tenant": {
+    "tenant_id": "tenant_other",
+    "ad_account_id": "act_other",
+    "users": [
+      { "actor_id": "u_other_approver", "display_name": "Approver tenant khác (demo)", "kind": "human", "grants": [{ "role": "approver", "ad_account_ids": "*", "approval_limit_minor": 999999, "approval_limit_currency": "USD" }, { "role": "analyst", "ad_account_ids": "*" }] }
+    ]
+  }
+}

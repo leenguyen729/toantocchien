@@ -1,0 +1,5 @@
+[
+  { "entity_id": "cmp_demo_1", "entity_type": "campaign", "parent_id": null, "name": "Demo POD Halloween Tees", "status": "PAUSED", "daily_budget_minor": null, "lifetime_budget_minor": null, "currency": "USD", "updated_at": "2026-10-19T00:00:00Z" },
+  { "entity_id": "adset_demo", "entity_type": "adset", "parent_id": "cmp_demo_1", "name": "Demo broad US", "status": "PAUSED", "daily_budget_minor": 1000, "lifetime_budget_minor": null, "currency": "USD", "updated_at": "2026-10-19T00:00:00Z" },
+  { "entity_id": "adset_demo_2", "entity_type": "adset", "parent_id": "cmp_demo_1", "name": "Demo interest US", "status": "PAUSED", "daily_budget_minor": 1500, "lifetime_budget_minor": null, "currency": "USD", "updated_at": "2026-10-19T00:00:00Z" }
+]
