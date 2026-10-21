@@ -92,7 +92,7 @@ function ProposalView() {
             </dd>
             <dt>Policy / config</dt>
             <dd>
-              {p.policy_version} · {p.config_version}
+              {p.policy_version} · {p.caps?.config_version ?? 'chưa có caps (bị chặn)'}
             </dd>
             <dt>Snapshot nguồn</dt>
             <dd>{p.source_snapshot_ids.join(', ') || '—'}</dd>

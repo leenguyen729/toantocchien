@@ -87,7 +87,7 @@ export type Proposal = {
   impact: { currency: string; daily_budget_delta_minor: number; lifetime_budget_delta_minor: number; new_daily_budget_minor: number; exposure_minor: number; activates_entities: number; creates_entities: number };
   source_snapshot_ids: string[];
   policy_version: string;
-  config_version: string;
+  caps: { config_version: string } | null;
 };
 export type PolicyResult = { decision: 'pass' | 'block'; violations: PolicyViolation[]; warnings: string[]; policy_version: string; evaluated_at: string };
 export type Approval = { approval_id: string; actor_id: string; decision: string; decided_at: string; expires_at: string; payload_hash: string; comment: string | null; scope: { ad_account_id: string; exposure_limit_minor: number; currency: string } };

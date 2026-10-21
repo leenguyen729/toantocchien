@@ -11,3 +11,4 @@ playwright-report/
 reports/tmp/
 .data/
 reports/e2e-ui/
+*.tsbuildinfo
