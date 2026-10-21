@@ -1,0 +1,80 @@
+name: pod-ads-manager CI
+
+on:
+  pull_request:
+    paths: ['pod-ads-manager/**', '.github/workflows/pod-ads-manager-ci.yml']
+  push:
+    branches: [main]
+    paths: ['pod-ads-manager/**', '.github/workflows/pod-ads-manager-ci.yml']
+
+permissions:
+  contents: read
+
+# CI chỉ chạy mock. loadRuntimeConfig từ chối mọi mode khác khi CI=true.
+env:
+  EXECUTION_MODE: mock
+  LIVE_WRITES_ENABLED: 'false'
+
+defaults:
+  run:
+    working-directory: pod-ads-manager
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16.10-alpine
+        env:
+          POSTGRES_USER: pod
+          POSTGRES_PASSWORD: ci_only_not_secret
+          POSTGRES_DB: pod_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U pod -d pod_test" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: pod-ads-manager/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pod-ads-manager/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run verify
+      - name: Postgres integration
+        run: pnpm test:integration:pg
+        env:
+          DATABASE_URL: postgres://pod:ci_only_not_secret@127.0.0.1:5432/pod_test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reports
+          path: |
+            pod-ads-manager/reports/skill-evals
+            pod-ads-manager/reports/coverage
+
+  e2e-ui:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: pod-ads-manager/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pod-ads-manager/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm e2e:ui
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright
+          path: pod-ads-manager/test-results

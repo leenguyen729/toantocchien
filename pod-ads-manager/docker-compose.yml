@@ -1,0 +1,20 @@
+# Postgres cho dev/test local. Mật khẩu lấy từ biến môi trường, không commit.
+#   POSTGRES_PASSWORD=<tự đặt> docker compose up -d db
+#   DATABASE_URL=postgres://pod:<tự đặt>@127.0.0.1:5432/pod_dev pnpm db:migrate
+services:
+  db:
+    image: postgres:16.10-alpine
+    environment:
+      POSTGRES_USER: pod
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?đặt POSTGRES_PASSWORD trước}
+      POSTGRES_DB: pod_dev
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pod_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pod -d pod_dev"]
+      interval: 5s
+      retries: 10
+volumes:
+  pod_pg:

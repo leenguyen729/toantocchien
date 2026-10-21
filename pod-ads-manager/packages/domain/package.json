@@ -1,0 +1,17 @@
+{
+  "name": "@pod/domain",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./pg": "./src/store/pg.ts"
+  },
+  "dependencies": {
+    "@pod/contracts": "workspace:*",
+    "@pod/policy": "workspace:*",
+    "@pod/adapter-meta": "workspace:*",
+    "decimal.js": "10.6.0",
+    "pg": "8.23.1"
+  }
+}

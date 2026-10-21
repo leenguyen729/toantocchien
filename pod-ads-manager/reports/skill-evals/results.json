@@ -1,0 +1,203 @@
+{
+  "ran_at": "2026-10-21T03:34:13.025Z",
+  "model": "none (deterministic tool-layer evals, không gọi Claude API)",
+  "prompt_version": "n/a",
+  "results": [
+    {
+      "skill": "pod-approval-execution",
+      "skill_version": "1.0.0",
+      "fixture_hash": "613c3d1c2e5e9a98",
+      "cases": [
+        {
+          "id": "s17-success-draft-approve-execute",
+          "category": "success",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s17-missing-approval-and-incomplete-data",
+          "category": "missing_data",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s17-remote-drift-after-approval",
+          "category": "conflicting_data",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s17-stale-data-and-expired-approval",
+          "category": "stale_data",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s17-injection-in-reason-does-not-approve",
+          "category": "prompt_injection",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s17-wrong-tenant-and-self-approval",
+          "category": "wrong_tenant_permission",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s17-replay-writes-once",
+          "category": "specific",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s17-hash-mismatch-blocked",
+          "category": "specific",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s17-lost-response-reconciled-not-retried",
+          "category": "specific",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s17-kill-switch-holds-queued-job",
+          "category": "specific",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "skill": "pod-business-context",
+      "skill_version": "1.0.0",
+      "fixture_hash": "613c3d1c2e5e9a98",
+      "cases": [
+        {
+          "id": "s01-success-ready",
+          "category": "success",
+          "critical": false,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s01-missing-cap-blocks-launch",
+          "category": "missing_data",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s01-currency-not-mixed",
+          "category": "conflicting_data",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s01-unconfirmed-draft-is-stale-context",
+          "category": "stale_data",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s01-injection-cannot-confirm-or-widen",
+          "category": "prompt_injection",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s01-wrong-tenant-and-role",
+          "category": "wrong_tenant_permission",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s01-change-is-versioned-and-audited",
+          "category": "specific",
+          "critical": false,
+          "passed": true,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "skill": "pod-operations-incident",
+      "skill_version": "1.0.0",
+      "fixture_hash": "613c3d1c2e5e9a98",
+      "cases": [
+        {
+          "id": "s18-success-spend-anomaly-freeze",
+          "category": "success",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s18-missing-fields-rejected",
+          "category": "missing_data",
+          "critical": false,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s18-conflicting-signals-never-unfreeze",
+          "category": "conflicting_data",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s18-stale-data-incident",
+          "category": "stale_data",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s18-injection-in-detail-cannot-unfreeze-or-go-live",
+          "category": "prompt_injection",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s18-wrong-tenant-and-role",
+          "category": "wrong_tenant_permission",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s18-kill-switch-blocks-queued-job",
+          "category": "specific",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        },
+        {
+          "id": "s18-audit-unavailable-fails-closed",
+          "category": "specific",
+          "critical": true,
+          "passed": true,
+          "failures": []
+        }
+      ]
+    }
+  ]
+}

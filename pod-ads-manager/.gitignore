@@ -1,0 +1,13 @@
+node_modules/
+.next/
+coverage/
+dist/
+.env
+.env.*
+!.env.example
+*.log
+test-results/
+playwright-report/
+reports/tmp/
+.data/
+reports/e2e-ui/

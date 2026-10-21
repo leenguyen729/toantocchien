@@ -1,0 +1,8 @@
+{
+  "name": "@pod/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": { "@pod/contracts": "workspace:*", "@pod/domain": "workspace:*", "@pod/adapter-meta": "workspace:*", "@pod/adapter-claude": "workspace:*", "@pod/adapter-shopify": "workspace:*", "fastify": "5.12.7", "@fastify/cors": "11.3.1" }
+}

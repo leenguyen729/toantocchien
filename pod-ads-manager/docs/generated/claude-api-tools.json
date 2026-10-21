@@ -1,0 +1,1694 @@
+[
+  {
+    "name": "context__get",
+    "description": "Đọc BusinessConfig mới nhất của ad account.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ad_account_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "ad_account_id"
+      ],
+      "$defs": {
+        "Id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:\\-]*$",
+          "description": "Opaque identifier"
+        }
+      }
+    }
+  },
+  {
+    "name": "context__validate",
+    "description": "Kiểm tra config nháp: currency/timezone/caps/FX; trả readiness và missing_fields. Không lưu.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "config_draft": {
+          "$ref": "#/$defs/BusinessConfig"
+        }
+      },
+      "required": [
+        "config_draft"
+      ],
+      "$defs": {
+        "Id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:\\-]*$",
+          "description": "Opaque identifier"
+        },
+        "Country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "Currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "ISO 4217 alpha code"
+        },
+        "Timezone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[A-Za-z_]+(/[A-Za-z0-9_+\\-]+)*$",
+          "description": "IANA timezone, verified in code"
+        },
+        "NonNegMinor": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "Timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$",
+          "description": "RFC3339 UTC"
+        },
+        "BusinessConfig": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tenant_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "store_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "ad_account_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "markets": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "country": {
+                    "$ref": "#/$defs/Country"
+                  },
+                  "currency": {
+                    "$ref": "#/$defs/Currency"
+                  }
+                },
+                "required": [
+                  "country",
+                  "currency"
+                ]
+              },
+              "minItems": 0
+            },
+            "account_currency": {
+              "$ref": "#/$defs/Currency"
+            },
+            "store_currency": {
+              "$ref": "#/$defs/Currency"
+            },
+            "reporting_timezone": {
+              "$ref": "#/$defs/Timezone"
+            },
+            "account_timezone": {
+              "$ref": "#/$defs/Timezone"
+            },
+            "kpi": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "primary": {
+                  "type": "string",
+                  "enum": [
+                    "contribution_after_ads",
+                    "cpa",
+                    "roas",
+                    "mer"
+                  ]
+                },
+                "target_cpa_minor": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/NonNegMinor"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "target_roas": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "primary",
+                "target_cpa_minor",
+                "target_roas"
+              ]
+            },
+            "caps": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "daily_budget_cap_minor": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/NonNegMinor"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "lifetime_budget_cap_minor": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/NonNegMinor"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "proposal_exposure_cap_minor": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/NonNegMinor"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "daily_budget_cap_minor",
+                "lifetime_budget_cap_minor",
+                "proposal_exposure_cap_minor"
+              ]
+            },
+            "max_change_pct": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "max_change_amount_minor": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/NonNegMinor"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "freshness_seconds": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "cooldown_seconds": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "approval_ttl_seconds": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 60,
+                  "maximum": 86400
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "separation_of_duties": {
+              "type": "boolean"
+            },
+            "fx": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "source": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 200
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "method": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 200
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "source",
+                "method"
+              ]
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "confirmed"
+              ]
+            },
+            "confirmed_by": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Id"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "confirmed_at": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Timestamp"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "updated_at": {
+              "$ref": "#/$defs/Timestamp"
+            }
+          },
+          "required": [
+            "tenant_id",
+            "store_id",
+            "ad_account_id",
+            "markets",
+            "account_currency",
+            "store_currency",
+            "reporting_timezone",
+            "account_timezone",
+            "kpi",
+            "caps",
+            "max_change_pct",
+            "max_change_amount_minor",
+            "freshness_seconds",
+            "cooldown_seconds",
+            "approval_ttl_seconds",
+            "separation_of_duties",
+            "fx",
+            "version",
+            "status",
+            "confirmed_by",
+            "confirmed_at",
+            "updated_at"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "context__save_draft",
+    "description": "Lưu config nháp thành version mới (status draft). Owner phải xác nhận riêng trên UI.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "config_draft": {
+          "$ref": "#/$defs/BusinessConfig"
+        }
+      },
+      "required": [
+        "config_draft"
+      ],
+      "$defs": {
+        "Id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:\\-]*$",
+          "description": "Opaque identifier"
+        },
+        "Country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "Currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "ISO 4217 alpha code"
+        },
+        "Timezone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[A-Za-z_]+(/[A-Za-z0-9_+\\-]+)*$",
+          "description": "IANA timezone, verified in code"
+        },
+        "NonNegMinor": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "Timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$",
+          "description": "RFC3339 UTC"
+        },
+        "BusinessConfig": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tenant_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "store_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "ad_account_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "markets": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "country": {
+                    "$ref": "#/$defs/Country"
+                  },
+                  "currency": {
+                    "$ref": "#/$defs/Currency"
+                  }
+                },
+                "required": [
+                  "country",
+                  "currency"
+                ]
+              },
+              "minItems": 0
+            },
+            "account_currency": {
+              "$ref": "#/$defs/Currency"
+            },
+            "store_currency": {
+              "$ref": "#/$defs/Currency"
+            },
+            "reporting_timezone": {
+              "$ref": "#/$defs/Timezone"
+            },
+            "account_timezone": {
+              "$ref": "#/$defs/Timezone"
+            },
+            "kpi": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "primary": {
+                  "type": "string",
+                  "enum": [
+                    "contribution_after_ads",
+                    "cpa",
+                    "roas",
+                    "mer"
+                  ]
+                },
+                "target_cpa_minor": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/NonNegMinor"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "target_roas": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "primary",
+                "target_cpa_minor",
+                "target_roas"
+              ]
+            },
+            "caps": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "daily_budget_cap_minor": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/NonNegMinor"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "lifetime_budget_cap_minor": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/NonNegMinor"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "proposal_exposure_cap_minor": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/NonNegMinor"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "daily_budget_cap_minor",
+                "lifetime_budget_cap_minor",
+                "proposal_exposure_cap_minor"
+              ]
+            },
+            "max_change_pct": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "max_change_amount_minor": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/NonNegMinor"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "freshness_seconds": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "cooldown_seconds": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "approval_ttl_seconds": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 60,
+                  "maximum": 86400
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "separation_of_duties": {
+              "type": "boolean"
+            },
+            "fx": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "source": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 200
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "method": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 200
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "source",
+                "method"
+              ]
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "confirmed"
+              ]
+            },
+            "confirmed_by": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Id"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "confirmed_at": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Timestamp"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "updated_at": {
+              "$ref": "#/$defs/Timestamp"
+            }
+          },
+          "required": [
+            "tenant_id",
+            "store_id",
+            "ad_account_id",
+            "markets",
+            "account_currency",
+            "store_currency",
+            "reporting_timezone",
+            "account_timezone",
+            "kpi",
+            "caps",
+            "max_change_pct",
+            "max_change_amount_minor",
+            "freshness_seconds",
+            "cooldown_seconds",
+            "approval_ttl_seconds",
+            "separation_of_duties",
+            "fx",
+            "version",
+            "status",
+            "confirmed_by",
+            "confirmed_at",
+            "updated_at"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "connections__health",
+    "description": "Trạng thái connector Meta/Shopify/Claude và mode hiện tại.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "meta__structure__read",
+    "description": "Đọc cấu trúc campaign/ad set/ad và remote_fingerprint hiện tại (read-only) để lập precondition.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ad_account_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "ad_account_id"
+      ],
+      "$defs": {
+        "Id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:\\-]*$",
+          "description": "Opaque identifier"
+        }
+      }
+    }
+  },
+  {
+    "name": "proposal__create",
+    "description": "Tạo proposal (hoặc revision) từ action allowlist; backend tự tính hash, impact, policy. Không thực thi.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ad_account_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "proposal_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "actions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/Action"
+          }
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "rollback_plan": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "source_snapshot_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          }
+        }
+      },
+      "required": [
+        "ad_account_id",
+        "proposal_id",
+        "actions",
+        "reason",
+        "rollback_plan",
+        "source_snapshot_ids"
+      ],
+      "$defs": {
+        "Id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:\\-]*$",
+          "description": "Opaque identifier"
+        },
+        "NonNegMinor": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "Currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "ISO 4217 alpha code"
+        },
+        "ActionCreateCampaignPaused": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "depends_on": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "uniqueItems": true
+            },
+            "kind": {
+              "const": "CREATE_CAMPAIGN_PAUSED"
+            },
+            "local_ref": {
+              "$ref": "#/$defs/Id"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "objective": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64,
+                  "description": "Validated against capability snapshot, not hard-coded"
+                },
+                "daily_budget": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "amount_minor": {
+                          "$ref": "#/$defs/NonNegMinor"
+                        },
+                        "currency": {
+                          "$ref": "#/$defs/Currency"
+                        }
+                      },
+                      "required": [
+                        "amount_minor",
+                        "currency"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "initial_status": {
+                  "const": "PAUSED"
+                }
+              },
+              "required": [
+                "name",
+                "objective",
+                "daily_budget",
+                "initial_status"
+              ]
+            }
+          },
+          "required": [
+            "action_id",
+            "depends_on",
+            "kind",
+            "local_ref",
+            "params"
+          ]
+        },
+        "Timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$",
+          "description": "RFC3339 UTC"
+        },
+        "Timezone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[A-Za-z_]+(/[A-Za-z0-9_+\\-]+)*$",
+          "description": "IANA timezone, verified in code"
+        },
+        "ActionCreateAdsetPaused": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "depends_on": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "uniqueItems": true
+            },
+            "kind": {
+              "const": "CREATE_ADSET_PAUSED"
+            },
+            "local_ref": {
+              "$ref": "#/$defs/Id"
+            },
+            "parent": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "local_ref": {
+                      "$ref": "#/$defs/Id"
+                    }
+                  },
+                  "required": [
+                    "local_ref"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "entity_id": {
+                      "$ref": "#/$defs/Id"
+                    }
+                  },
+                  "required": [
+                    "entity_id"
+                  ]
+                }
+              ]
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "daily_budget": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "amount_minor": {
+                          "$ref": "#/$defs/NonNegMinor"
+                        },
+                        "currency": {
+                          "$ref": "#/$defs/Currency"
+                        }
+                      },
+                      "required": [
+                        "amount_minor",
+                        "currency"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "lifetime_budget": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "amount_minor": {
+                          "$ref": "#/$defs/NonNegMinor"
+                        },
+                        "currency": {
+                          "$ref": "#/$defs/Currency"
+                        }
+                      },
+                      "required": [
+                        "amount_minor",
+                        "currency"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "optimization_goal": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "billing_event": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "audience_ref": {
+                  "$ref": "#/$defs/Id"
+                },
+                "start_time": {
+                  "$ref": "#/$defs/Timestamp"
+                },
+                "end_time": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/Timestamp"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "schedule_timezone": {
+                  "$ref": "#/$defs/Timezone"
+                },
+                "initial_status": {
+                  "const": "PAUSED"
+                }
+              },
+              "required": [
+                "name",
+                "daily_budget",
+                "lifetime_budget",
+                "optimization_goal",
+                "billing_event",
+                "audience_ref",
+                "start_time",
+                "end_time",
+                "schedule_timezone",
+                "initial_status"
+              ]
+            }
+          },
+          "required": [
+            "action_id",
+            "depends_on",
+            "kind",
+            "local_ref",
+            "parent",
+            "params"
+          ]
+        },
+        "Sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "ActionCreateAdPaused": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "depends_on": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "uniqueItems": true
+            },
+            "kind": {
+              "const": "CREATE_AD_PAUSED"
+            },
+            "local_ref": {
+              "$ref": "#/$defs/Id"
+            },
+            "parent": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "local_ref": {
+                      "$ref": "#/$defs/Id"
+                    }
+                  },
+                  "required": [
+                    "local_ref"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "entity_id": {
+                      "$ref": "#/$defs/Id"
+                    }
+                  },
+                  "required": [
+                    "entity_id"
+                  ]
+                }
+              ]
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "creative_asset_id": {
+                  "$ref": "#/$defs/Id"
+                },
+                "creative_sha256": {
+                  "$ref": "#/$defs/Sha256"
+                },
+                "review_id": {
+                  "$ref": "#/$defs/Id"
+                },
+                "copy_variant_id": {
+                  "$ref": "#/$defs/Id"
+                },
+                "initial_status": {
+                  "const": "PAUSED"
+                }
+              },
+              "required": [
+                "name",
+                "creative_asset_id",
+                "creative_sha256",
+                "review_id",
+                "copy_variant_id",
+                "initial_status"
+              ]
+            }
+          },
+          "required": [
+            "action_id",
+            "depends_on",
+            "kind",
+            "local_ref",
+            "parent",
+            "params"
+          ]
+        },
+        "EntityStatus": {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "PAUSED"
+          ]
+        },
+        "ActionSetDailyBudget": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "depends_on": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "uniqueItems": true
+            },
+            "kind": {
+              "const": "SET_DAILY_BUDGET"
+            },
+            "entity_type": {
+              "type": "string",
+              "enum": [
+                "campaign",
+                "adset"
+              ]
+            },
+            "entity_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "before": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "amount_minor": {
+                  "$ref": "#/$defs/NonNegMinor"
+                },
+                "currency": {
+                  "$ref": "#/$defs/Currency"
+                }
+              },
+              "required": [
+                "amount_minor",
+                "currency"
+              ]
+            },
+            "after": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "amount_minor": {
+                  "$ref": "#/$defs/NonNegMinor"
+                },
+                "currency": {
+                  "$ref": "#/$defs/Currency"
+                }
+              },
+              "required": [
+                "amount_minor",
+                "currency"
+              ]
+            },
+            "preconditions": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "status": {
+                  "$ref": "#/$defs/EntityStatus"
+                },
+                "remote_fingerprint": {
+                  "$ref": "#/$defs/Sha256"
+                }
+              },
+              "required": [
+                "status",
+                "remote_fingerprint"
+              ]
+            }
+          },
+          "required": [
+            "action_id",
+            "depends_on",
+            "kind",
+            "entity_type",
+            "entity_id",
+            "before",
+            "after",
+            "preconditions"
+          ]
+        },
+        "ActionSetLifetimeBudget": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "depends_on": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "uniqueItems": true
+            },
+            "kind": {
+              "const": "SET_LIFETIME_BUDGET"
+            },
+            "entity_type": {
+              "type": "string",
+              "enum": [
+                "campaign",
+                "adset"
+              ]
+            },
+            "entity_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "before": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "amount_minor": {
+                  "$ref": "#/$defs/NonNegMinor"
+                },
+                "currency": {
+                  "$ref": "#/$defs/Currency"
+                }
+              },
+              "required": [
+                "amount_minor",
+                "currency"
+              ]
+            },
+            "after": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "amount_minor": {
+                  "$ref": "#/$defs/NonNegMinor"
+                },
+                "currency": {
+                  "$ref": "#/$defs/Currency"
+                }
+              },
+              "required": [
+                "amount_minor",
+                "currency"
+              ]
+            },
+            "preconditions": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "status": {
+                  "$ref": "#/$defs/EntityStatus"
+                },
+                "remote_fingerprint": {
+                  "$ref": "#/$defs/Sha256"
+                }
+              },
+              "required": [
+                "status",
+                "remote_fingerprint"
+              ]
+            }
+          },
+          "required": [
+            "action_id",
+            "depends_on",
+            "kind",
+            "entity_type",
+            "entity_id",
+            "before",
+            "after",
+            "preconditions"
+          ]
+        },
+        "ActionSetStatus": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "depends_on": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "uniqueItems": true
+            },
+            "kind": {
+              "const": "SET_STATUS"
+            },
+            "entity_type": {
+              "type": "string",
+              "enum": [
+                "campaign",
+                "adset",
+                "ad"
+              ]
+            },
+            "entity_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "before": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "status": {
+                  "$ref": "#/$defs/EntityStatus"
+                }
+              },
+              "required": [
+                "status"
+              ]
+            },
+            "after": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "status": {
+                  "$ref": "#/$defs/EntityStatus"
+                }
+              },
+              "required": [
+                "status"
+              ]
+            },
+            "preconditions": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "status": {
+                  "$ref": "#/$defs/EntityStatus"
+                },
+                "remote_fingerprint": {
+                  "$ref": "#/$defs/Sha256"
+                }
+              },
+              "required": [
+                "status",
+                "remote_fingerprint"
+              ]
+            }
+          },
+          "required": [
+            "action_id",
+            "depends_on",
+            "kind",
+            "entity_type",
+            "entity_id",
+            "before",
+            "after",
+            "preconditions"
+          ]
+        },
+        "Action": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "CREATE_CAMPAIGN_PAUSED",
+                "CREATE_ADSET_PAUSED",
+                "CREATE_AD_PAUSED",
+                "SET_DAILY_BUDGET",
+                "SET_LIFETIME_BUDGET",
+                "SET_STATUS"
+              ]
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ActionCreateCampaignPaused"
+            },
+            {
+              "$ref": "#/$defs/ActionCreateAdsetPaused"
+            },
+            {
+              "$ref": "#/$defs/ActionCreateAdPaused"
+            },
+            {
+              "$ref": "#/$defs/ActionSetDailyBudget"
+            },
+            {
+              "$ref": "#/$defs/ActionSetLifetimeBudget"
+            },
+            {
+              "$ref": "#/$defs/ActionSetStatus"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "proposal__validate",
+    "description": "Chạy lại policy với trạng thái hiện tại; không đổi gì.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "proposal_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "proposal_id",
+        "revision"
+      ],
+      "$defs": {
+        "Id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:\\-]*$",
+          "description": "Opaque identifier"
+        }
+      }
+    }
+  },
+  {
+    "name": "approval__status",
+    "description": "Trạng thái approval của một revision (none/approved/rejected/expired). Không thể duyệt qua tool này.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "proposal_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "proposal_id",
+        "revision"
+      ],
+      "$defs": {
+        "Id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:\\-]*$",
+          "description": "Opaque identifier"
+        }
+      }
+    }
+  },
+  {
+    "name": "execution__request",
+    "description": "Xin xếp hàng thực thi proposal ĐÃ được người duyệt. Chỉ nhận proposal_id/revision/expected_payload_hash.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "proposal_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "expected_payload_hash": {
+          "$ref": "#/$defs/Sha256"
+        }
+      },
+      "required": [
+        "proposal_id",
+        "revision",
+        "expected_payload_hash"
+      ],
+      "$defs": {
+        "Id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:\\-]*$",
+          "description": "Opaque identifier"
+        },
+        "Sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    }
+  },
+  {
+    "name": "execution__reconcile",
+    "description": "Đối soát proposal UNKNOWN với remote (read-only, không tạo lại).",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "proposal_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "proposal_id",
+        "revision"
+      ],
+      "$defs": {
+        "Id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:\\-]*$",
+          "description": "Opaque identifier"
+        }
+      }
+    }
+  },
+  {
+    "name": "ops__health",
+    "description": "Sức khỏe hệ thống: mode, freeze, hàng đợi, UNKNOWN, incident, chuỗi audit.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "ops__freeze_writes",
+    "description": "Bật khóa ghi nội bộ (fail-closed). KHÔNG dừng quảng cáo đang chạy. Mở lại chỉ owner trên UI.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "reason"
+      ]
+    }
+  },
+  {
+    "name": "ops__incident__create",
+    "description": "Tạo incident từ tín hiệu, tùy chọn khóa ghi nội bộ.",
+    "input_schema": {
+      "$ref": "#/$defs/OperationsIncidentInput",
+      "$defs": {
+        "Timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$",
+          "description": "RFC3339 UTC"
+        },
+        "Id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:\\-]*$",
+          "description": "Opaque identifier"
+        },
+        "OperationsIncidentInput": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signal": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "connector_error",
+                    "data_stale",
+                    "permission_lost",
+                    "spend_anomaly",
+                    "unknown_mutation",
+                    "audit_unavailable",
+                    "other"
+                  ]
+                },
+                "detail": {
+                  "type": "string",
+                  "maxLength": 1000
+                },
+                "observed_at": {
+                  "$ref": "#/$defs/Timestamp"
+                },
+                "ad_account_ids": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/Id"
+                  }
+                }
+              },
+              "required": [
+                "kind",
+                "detail",
+                "observed_at",
+                "ad_account_ids"
+              ]
+            },
+            "request_freeze": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "signal",
+            "request_freeze"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "ops__recovery__draft",
+    "description": "Checklist khôi phục xác định theo loại tín hiệu.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "connector_error",
+            "data_stale",
+            "permission_lost",
+            "spend_anomaly",
+            "unknown_mutation",
+            "audit_unavailable",
+            "other"
+          ]
+        }
+      },
+      "required": [
+        "kind"
+      ]
+    }
+  }
+]
